@@ -1,0 +1,2 @@
+# ansible-cvp-cookiecutter
+cookiecutter
