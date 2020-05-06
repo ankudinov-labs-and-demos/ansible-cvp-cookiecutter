@@ -6,6 +6,7 @@
   - [Description](#description)
   - [Lab Topology](#lab-topology)
   - [Preparing the Lab](#preparing-the-lab)
+  - [HOW TO RUN](#how-to-run)
 
 <!-- /TOC -->
 
@@ -89,3 +90,12 @@ host L4 {
 
 All devices should register in Undefined container before you start:
 ![initial cvp state](media/initial_cvp_state.png)
+
+## HOW TO RUN
+
+```console
+python3 -m venv .ccvenv
+source .ccvenv/bin/activate
+pip install cookiecutter
+cookiecutter gh:ankudinov-labs-and-demos/ansible-cvp-cookiecutter
+```
