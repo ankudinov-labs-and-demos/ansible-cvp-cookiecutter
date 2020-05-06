@@ -1,3 +1,10 @@
 {
-    "demo_name": "ansible_cvp_demo"
+    "demo_name": "ansible_cvp_demo",
+    "ansible_user": "cvpadmin",
+    "ansible_password": "arista123",
+    "ansible_host": "192.168.122.122",
+    "cvp": {
+        "container_root": "AVD_DEMO",
+        "configlets_prefix": "ADV-"
+    }
 }
