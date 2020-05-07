@@ -11,7 +11,7 @@
       #   tags: [build, generate]
       #   import_role:
       #     name: arista.avd.build_output_folders
-      - name: 'create cvp structure config folder: {{documentation_dir_name}}'
+      - name: 'create cvp structure config folder'
         tags: [build, generate]
         file:
           path: '{{playbook_dir}}/intended/structured_configs/cvp/'
