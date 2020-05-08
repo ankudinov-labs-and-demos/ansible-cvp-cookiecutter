@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import yaml
+import json
 import sys
+import os
 from passlib.hash import sha512_crypt
 from jsonpath2 import Path
 
@@ -95,47 +97,104 @@ for dc in {{ cookiecutter.inventory.dc_list }}:
                 'password': dc['bgp_peer_groups']['MLAG_IPv4_UNDERLAY_PEER']['password']
             }
         },
-        'spine': dc['spine'],
+        'spine': {
+            'platform': dc['spine']['platform'],
+            'bgp_as': int(dc['spine']['bgp_as']),
+            'leaf_as_range': dc['spine']['leaf_as_range'],
+            'nodes': dict()
+        },
         'l3leaf': {
-            'defaults': dc['l3leaf']['defaults'],
+            'defaults': {
+                'bgp_as': int(dc['l3leaf']['defaults']['bgp_as']),
+                'mlag_interfaces': dc['l3leaf']['defaults']['mlag_interfaces'],
+                'platform': dc['l3leaf']['defaults']['platform'],
+                'spanning_tree_mode': dc['l3leaf']['defaults']['spanning_tree_mode'],
+                'spanning_tree_priority': int(dc['l3leaf']['defaults']['spanning_tree_priority']),
+                'spines': dc['l3leaf']['defaults']['spines'],
+                'uplink_to_spine_interfaces': dc['l3leaf']['defaults']['uplink_to_spine_interfaces'],
+                'virtual_router_mac_address': dc['l3leaf']['defaults']['virtual_router_mac_address'],
+            },
             'node_groups': dict()
         },
         'spine_bgp_defaults': dc['spine_bgp_defaults'],
         'leaf_bgp_defaults': dc['leaf_bgp_defaults'],
-        'p2p_uplinks_mtu': dc['p2p_uplinks_mtu'],
-        'bfd_multihop': dc['bfd_multihop']
+        'p2p_uplinks_mtu': int(dc['p2p_uplinks_mtu']),
+        'bfd_multihop': {
+            'interval': int(dc['bfd_multihop']['interval']),
+            'min_rx': int(dc['bfd_multihop']['min_rx']),
+            'multiplier': int(dc['bfd_multihop']['multiplier'])
+        }
     }
+    write_yaml("group_vars/SPINES.yml", {'type': 'spine'})  # add spine type
     # add spine parameters to group vars for every spine in the inventory
     spine_group_entry = jp2query(dc, '$..group_list[*][?(@.group_name = "SPINES")]')  # jsonpath query
     spine_list = spine_group_entry[0]['host_list']  # we only expect single match
-    fabric_vars['spine'].update({
-        'nodes': dict()
-    })
     for index, spine in enumerate(spine_list):
         fabric_vars['spine']['nodes'].update({
             spine['hostname']: {
-                'id': index+1,
-                'mgmt_ip': spine['ansible_host']
+                'id': int(index+1),
+                'mgmt_ip': f"{spine['ansible_host']}/" + "{{ cookiecutter.mgmt_settings.subnet_mask_length }}"
             }
         })
     # add leaf parameters to group vars
     leaf_index = 1
     for group in dc['group_list']:
         if 'LEAFS' in group['group_name'].upper():
+            write_yaml(f"group_vars/{group['group_name']}.yml", {'type': 'l3leaf'})  # add leaf type
             for subgroup in group['subgroup_list']:
                 fabric_vars['l3leaf']['node_groups'].update({
                     subgroup['subgroup_name']: {
-                        'bgp_as': subgroup['bgp_as'],
+                        'bgp_as': int(subgroup['bgp_as']),
                         'nodes': dict()
                     }
                 })
                 for node in subgroup['host_list']:
                     fabric_vars['l3leaf']['node_groups'][subgroup['subgroup_name']]['nodes'].update({
                         node['hostname']: {
-                            'id': leaf_index,
-                            'mgmt_ip': node['ansible_host'],
+                            'id': int(leaf_index),
+                            'mgmt_ip': f"{node['ansible_host']}/" + "{{ cookiecutter.mgmt_settings.subnet_mask_length }}",
                             'spine_interfaces': node['spine_interfaces']
                         }
                     })
+                    leaf_index += 1
 
     write_yaml(f"group_vars/{dc['dc_name']}_FABRIC.yml", fabric_vars)
+    # create directory for the fabric documentation
+    os.mkdir(f'documentation/{dc["dc_name"]}_FABRIC')
+
+    # add tenant group vars
+    tenant_group_vars = {"tenants": dict()}
+    for tenant_name, tenant_details in dc['tenants'].items():
+        tenant_group_vars['tenants'].update({
+            f"{tenant_name}": {
+                "mac_vrf_vni_base": int(tenant_details["mac_vrf_vni_base"]),
+                "vrfs": dict()
+            }
+        })
+        for vrf_name, vrf_details in tenant_details["vrfs"].items():
+            tenant_group_vars['tenants'][f"{tenant_name}"]["vrfs"].update({
+                    f"{vrf_name}": {
+                        "vrf_vni": int(tenant_details["vrfs"][f"{vrf_name}"]["vrf_vni"]),
+                        "vtep_diagnostic": {
+                            "loopback": int(tenant_details["vrfs"][f"{vrf_name}"]["vtep_diagnostic"]["loopback"]),
+                            "loopback_ip_range": tenant_details["vrfs"][f"{vrf_name}"]["vtep_diagnostic"]["loopback_ip_range"]
+                        },
+                        "svis": dict()
+                    }
+                })
+            for svi_number, svi_details in vrf_details["svis"].items():
+                tenant_group_vars['tenants'][f"{tenant_name}"]["vrfs"][f"{vrf_name}"]["svis"].update({
+                    int(f"{svi_number}"): {
+                        "name": svi_details["name"],
+                        "tags": svi_details["tags"],
+                        "enabled": svi_details["enabled"],
+                        "ip_subnet": svi_details["ip_subnet"]
+                    }
+                })
+    write_yaml(f"group_vars/{dc['dc_name']}_TENANTS_NETWORKS.yml", tenant_group_vars)
+
+    # add server group vars
+    write_yaml(f"group_vars/{dc['dc_name']}_SERVERS.yml", {
+        'servers': dc['servers'],
+        'port_profiles': dc['port_profiles']
+    })

@@ -51,7 +51,6 @@
 
               {%- endfor %}
             {%- endif %}
-      {%- endfor %}
             vars:
               ansible_connection: httpapi
               ansible_network_os: eos
@@ -62,11 +61,10 @@
               ansible_become_method: enable
               ansible_httpapi_use_ssl: true
               ansible_httpapi_validate_certs: false
-          DC1_TENANTS_NETWORKS:
+          {{ dc.dc_name }}_TENANTS_NETWORKS:
             children:
-              DC1_L3LEAFS:
-              DC1_L2LEAFS:
-          DC1_SERVERS:
+              LEAFS:
+          {{ dc.dc_name }}_SERVERS:
             children:
-              DC1_L3LEAFS:
-              DC1_L2LEAFS:
+              LEAFS:
+      {%- endfor %}

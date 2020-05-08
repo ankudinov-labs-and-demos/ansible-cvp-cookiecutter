@@ -1,6 +1,7 @@
+{%- for dc in cookiecutter.inventory.dc_list %}
 ---
   - name: Build Switch configuration
-    hosts: DC1_FABRIC
+    hosts: {{ dc.dc_name }}
     connection: local
     gather_facts: false
     collections:
@@ -28,11 +29,11 @@
         tags: [build, generate]
         import_role:
           name: eos_cli_config_gen
-      - name: 'Generate documentation with mkdocs'
-        tags: [build, generate]
-        import_role:
-          name: publish-documentation
-        run_once: True
+      # - name: 'Generate documentation with mkdocs'
+      #   tags: [build, generate]
+      #   import_role:
+      #     name: publish-documentation
+      #   run_once: True
   
   # - name: Configuration deployment with CVP
   #   hosts: cv_server
@@ -50,3 +51,4 @@
   #         configlets_prefix: 'DC1-AVD'
   #         device_filter: 'DC1'
   #         state: present
+{%- endfor %}

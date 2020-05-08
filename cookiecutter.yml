@@ -8,6 +8,7 @@ ansible_password: arista123
 ansible_host: 192.168.122.122
 mgmt_settings:
   oob_gateway: 192.168.122.1
+  subnet_mask_length: 24
   name_server_list:
     - 192.168.178.1
     - 8.8.8.8
@@ -58,7 +59,7 @@ inventory:
           virtual_router_mac_address: 00:1c:73:00:dc:01
           platform: vEOS-LAB
           bgp_as: 65100
-          spines: [DC1-SPINE1, DC1-SPINE2]
+          spines: [SPINE1, SPINE2]
           uplink_to_spine_interfaces: [Ethernet1, Ethernet2]
           mlag_interfaces: [Ethernet3, Ethernet4]
           spanning_tree_priority: 4096
@@ -91,6 +92,58 @@ inventory:
                 - hostname: LEAF2B
                   ansible_host: 192.168.122.24
                   spine_interfaces: [Ethernet4, Ethernet4]
+
+      tenants:
+        # Tenant A Specific Information - VRFs / VLANs
+        Tenant_A:
+          mac_vrf_vni_base: 10000
+          vrfs:
+            Tenant_A_OP_Zone:
+              vrf_vni: 10
+              vtep_diagnostic:
+                loopback: 100
+                loopback_ip_range: 10.255.1.0/24
+              svis:
+                110:
+                  name: Tenant_A_OP_Zone_1
+                  tags: [opzone]
+                  enabled: true
+                  ip_subnet: 10.1.10.0/24
+
+      port_profiles:
+        TENANT_A:
+          mode: access
+          vlans: "110"
+        TENANT_B:
+          mode: trunk
+          vlans: "210-211"
+
+      servers:
+        server01:
+          rack: RackA
+          adapters:
+            - type: nic
+              server_ports: [Eth1, Eth2]
+              switch_ports: [Ethernet5, Ethernet5]
+              switches: [LEAF1A, LEAF1B]
+              profile: TENANT_A
+              port_channel:
+                state: present
+                description: PortChanne1
+                mode: active
+        server02:
+          rack: RackB
+          adapters:
+            - type: nic
+              server_ports: [Eth1, Eth2]
+              switch_ports: [Ethernet5, Ethernet5]
+              switches: [LEAF2A, LEAF2B]
+              profile: TENANT_A
+              port_channel:
+                state: present
+                description: PortChanne1
+                mode: active
+
 
       #### Override for vEOS Lab Caveats ####
 
