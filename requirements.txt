@@ -1,3 +1,4 @@
+antlr4-python3-runtime==4.7.2
 arrow==0.15.6
 binaryornot==0.4.4
 certifi==2020.4.5.1
@@ -8,6 +9,7 @@ future==0.18.2
 idna==2.9
 Jinja2==2.11.2
 jinja2-time==0.2.0
+jsonpath2==0.4.4
 MarkupSafe==1.1.1
 passlib==1.7.2
 poyo==0.5.0

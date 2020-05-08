@@ -9,31 +9,35 @@ help: ## Display help message
 
 .PHONY: build
 build: ## Run ansible playbook to build EVPN Fabric configuration.
-	ansible-playbook dc1-fabric-deploy-cvp.yml --tags build
+	ansible-playbook deploy-fabric-playbook.yml
 
-.PHONY: provision
-provision: ## Run ansible playbook to deploy EVPN Fabric.
-	ansible-playbook dc1-fabric-deploy-cvp.yml --tags provision
+# .PHONY: build
+# build: ## Run ansible playbook to build EVPN Fabric configuration.
+# 	ansible-playbook dc1-fabric-deploy-cvp.yml --tags build
 
-.PHONY: deploy
-deploy: ## Run ansible playbook to deploy EVPN Fabric.
-	ansible-playbook dc1-fabric-deploy-cvp.yml --extra-vars "execute_tasks=true" --tags "build,provision,apply"
+# .PHONY: provision
+# provision: ## Run ansible playbook to deploy EVPN Fabric.
+# 	ansible-playbook dc1-fabric-deploy-cvp.yml --tags provision
 
-.PHONY: reset
-reset: ## Run ansible playbook to reset all devices.
-	ansible-playbook dc1-fabric-reset-cvp.yml
+# .PHONY: deploy
+# deploy: ## Run ansible playbook to deploy EVPN Fabric.
+# 	ansible-playbook dc1-fabric-deploy-cvp.yml --extra-vars "execute_tasks=true" --tags "build,provision,apply"
 
-.PHONY: clean
-clean: ## Delete previously generated outputs
-	sh repository-cleanup.sh
+# .PHONY: reset
+# reset: ## Run ansible playbook to reset all devices.
+# 	ansible-playbook dc1-fabric-reset-cvp.yml
 
-.PHONY: ztp
-ztp: ## Configure ZTP server
-	ansible-playbook dc1-ztp-configuration.yml
+# .PHONY: clean
+# clean: ## Delete previously generated outputs
+# 	sh repository-cleanup.sh
 
-.PHONY: configlet-upload
-configlet-upload: ## Upload configlets available in configlets/ to CVP.
-	ansible-playbook dc1-upload-configlets.yml
+# .PHONY: ztp
+# ztp: ## Configure ZTP server
+# 	ansible-playbook dc1-ztp-configuration.yml
+
+# .PHONY: configlet-upload
+# configlet-upload: ## Upload configlets available in configlets/ to CVP.
+# 	ansible-playbook dc1-upload-configlets.yml
 
 # .PHONY: install
 # install: ## Install Ansible collections
@@ -52,6 +56,7 @@ uninstall: ## Remove collection from ansible
 
 .PHONY: install-requirements
 install-requirements: ## Install python requirements
+	pip install --upgrade pip
 	pip install --upgrade wheel
 	pip install -r requirements.txt
 
