@@ -4,10 +4,10 @@
       CVP:
         hosts:
           cv_server:
-            ansible_httpapi_host: {{cookiecutter.ansible_host}}
-            ansible_host: {{cookiecutter.ansible_host}}
-            ansible_user: {{cookiecutter.ansible_user}}
-            ansible_password: {{cookiecutter.ansible_password}}
+            ansible_httpapi_host: {{ cookiecutter.ansible_host }}
+            ansible_host: {{ cookiecutter.ansible_host }}
+            ansible_user: {{ cookiecutter.ansible_user }}
+            ansible_password: {{ cookiecutter.ansible_password }}
             ansible_connection: httpapi
             ansible_httpapi_use_ssl: true
             ansible_httpapi_validate_certs: false
@@ -16,46 +16,48 @@
             # Configuration to get Virtual Env information
             ansible_python_interpreter: $(which python3)
       # DC1_Fabric - EVPN Fabric running in home lab
-      DC1:
+      {%- for dc in cookiecutter.inventory.dc_list %}
+      {{ dc.dc_name }}:
         children:
-          DC1_FABRIC:
+          {{ dc.dc_name }}_FABRIC:
             children:
-              DC1_SPINES:
+            {%- if dc.group_list is defined %}
+              {%- for group in dc.group_list %}
+              {{ group.group_name }}:
+
+                {%- if group.host_list is defined %}
                 hosts:
-                  DC1-SPINE1:
-                    ansible_host: 10.255.0.11
-                  DC1-SPINE2:
-                    ansible_host: 10.255.0.12
-              DC1_L3LEAFS:
+                  {%- for host in group.host_list %}
+                  {{ host.hostname }}:
+                    ansible_host: {{ host.ansible_host }}
+                  {%- endfor %}
+                {%- endif %}
+
+                {%- if group.subgroup_list is defined %}
                 children:
-                  DC1_LEAF1:
+                  {%- for subgroup in group.subgroup_list %}
+                  {{ subgroup.subgroup_name }}:
+
+                  {%- if subgroup.host_list is defined %}
                     hosts:
-                      DC1-LEAF1A:
-                        ansible_host: 10.255.0.13
-                      DC1-LEAF1B:
-                        ansible_host: 10.255.0.14
-                  DC1_LEAF2:
-                    hosts:
-                      DC1-LEAF2A:
-                        ansible_host: 10.255.0.15
-                      DC1-LEAF2B:
-                        ansible_host: 10.255.0.16
-              DC1_L2LEAFS:
-                children:
-                  DC1_L2LEAF1:
-                    hosts:
-                      DC1-L2LEAF1A:
-                        ansible_host: 10.255.0.17
-                  DC1_L2LEAF2:
-                    hosts:
-                      DC1-L2LEAF2A:
-                        ansible_host: 10.255.0.18
+                  {%- for host in subgroup.host_list %}
+                      {{ host.hostname }}:
+                        ansible_host: {{ host.ansible_host }}
+                  {%- endfor %}
+                {%- endif %}
+
+                  {%- endfor %}
+                {%- endif %}
+
+              {%- endfor %}
+            {%- endif %}
+      {%- endfor %}
             vars:
               ansible_connection: httpapi
               ansible_network_os: eos
-              ansible_user: ansible
+              ansible_user: {{ cookiecutter.ansible_user }}
               # should use vault for passwords
-              ansible_ssh_pass: ansible
+              ansible_ssh_pass: {{ cookiecutter.ansible_password }}
               ansible_become: true
               ansible_become_method: enable
               ansible_httpapi_use_ssl: true
