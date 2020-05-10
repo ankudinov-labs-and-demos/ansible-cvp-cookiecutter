@@ -2,6 +2,6 @@
     "files.associations": {
         "*.yml": "jinja-yaml",
         "*.py": "jinja-py",
-        "*.md": "jinja-markdown"
+        "*.md": "jinja-md"
     }
 }
