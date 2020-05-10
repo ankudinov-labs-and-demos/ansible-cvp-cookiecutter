@@ -4,8 +4,8 @@
 project_name: ansible_cvp  # project directory name
 ansible_user: cvpadmin
 ansible_password: arista123
-# template to be updated with filter plugin to avoid encrypting password or use vault
 ansible_host: 192.168.122.122
+
 mgmt_settings:
   oob_gateway: 192.168.122.1
   subnet_mask_length: 24
@@ -16,11 +16,13 @@ mgmt_settings:
     - time.google.com
     - 0.fr.pool.ntp.org
     - 1.fr.pool.ntp.org
+
 cvp:
   ingest_key: arista123
   container_root: DC1_FABRIC  # must match fabric name!
   configlets_prefix: DC1-AVD
   device_filter: DC1
+
 inventory:
   dc_list:
     - dc_name: DC1
