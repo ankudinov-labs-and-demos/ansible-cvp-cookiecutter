@@ -122,18 +122,21 @@
                 ]
             }
         ],
-        "port_profiles": {
-            "TENANT_A": {
+        "port_profiles": [
+            {
+                "name": "TENANT_A",
                 "mode": "access",
                 "vlans": "110"
             },
-            "TENANT_B": {
+            {
+                "name": "TENANT_B",
                 "mode": "trunk",
                 "vlans": "210-211"
             }
-        },
-        "servers": {
-            "server01": {
+        ],
+        "servers": [
+            {
+                "name": "server01",
                 "rack": "RackA",
                 "adapters": [
                     {
@@ -159,7 +162,8 @@
                     }
                 ]
             },
-            "server02": {
+            {
+                "name": "server02",
                 "rack": "RackB",
                 "adapters": [
                     {
@@ -185,6 +189,6 @@
                     }
                 ]
             }
-        }
+        ]
     }
 }

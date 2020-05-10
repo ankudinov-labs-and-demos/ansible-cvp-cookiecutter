@@ -85,35 +85,37 @@ dc:
           ip_subnet: 10.1.10.0/24
 
   port_profiles:
-    TENANT_A:
-      mode: access
-      vlans: "110"
-    TENANT_B:
-      mode: trunk
-      vlans: "210-211"
+  - name: TENANT_A
+    mode: access
+    vlans: "110"
+  - name: TENANT_B
+    mode: trunk
+    vlans: "210-211"
 
   servers:
-    server01:
-      rack: RackA
-      adapters:
-        - type: nic
-          server_ports: [Eth1, Eth2]
-          switch_ports: [Ethernet5, Ethernet5]
-          switches: [DC1_LEAF1A, DC1_LEAF1B]
-          profile: TENANT_A
-          port_channel:
-            state: present
-            description: PortChanne1
-            mode: active
-    server02:
-      rack: RackB
-      adapters:
-        - type: nic
-          server_ports: [Eth1, Eth2]
-          switch_ports: [Ethernet5, Ethernet5]
-          switches: [DC1_LEAF2A, DC1_LEAF2B]
-          profile: TENANT_A
-          port_channel:
-            state: present
-            description: PortChanne1
-            mode: active
+  
+  - name: server01
+    rack: RackA
+    adapters:
+    - type: nic
+      server_ports: [Eth1, Eth2]
+      switch_ports: [Ethernet5, Ethernet5]
+      switches: [DC1_LEAF1A, DC1_LEAF1B]
+      profile: TENANT_A
+      port_channel:
+        state: present
+        description: PortChanne1
+        mode: active
+
+  - name: server02
+    rack: RackB
+    adapters:
+    - type: nic
+      server_ports: [Eth1, Eth2]
+      switch_ports: [Ethernet5, Ethernet5]
+      switches: [DC1_LEAF2A, DC1_LEAF2B]
+      profile: TENANT_A
+      port_channel:
+        state: present
+        description: PortChanne1
+        mode: active
