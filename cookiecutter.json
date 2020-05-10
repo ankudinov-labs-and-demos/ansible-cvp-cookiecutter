@@ -1,8 +1,8 @@
 {
-    "demo_name": "ansible_cvp_demo",
+    "project_name": "ansible_cvp",
     "ansible_user": "cvpadmin",
     "ansible_password": "arista123",
-    "ansible_host": "192.168.122.122",
+    "ansible_sha512_password": "$6$zI/qBiVV4.s9KYQM$dkad1DN7VXeV9YVm0HKI6rk2lmKPsBLjx/XvC0Zkv6AkVRZ6j44P9rUK.TL99YU37ukhraw3MwKe5Be3RKe2z1",
     "mgmt_settings": {
         "oob_gateway": "192.168.122.1",
         "subnet_mask_length": 24,
@@ -17,22 +17,89 @@
         ]
     },
     "cvp": {
+        "host": "192.168.122.122",
         "ingest_key": "arista123",
         "container_root": "DC1_FABRIC",
         "configlets_prefix": "DC1-AVD",
         "device_filter": "DC1"
     },
+    "dc": {
+        "name": "DC1",
+        "underlay_p2p_network_summary": "172.31.255.0/24",
+        "overlay_loopback_network_summary": "192.168.255.0/24",
+        "vtep_loopback_network_summary": "192.168.254.0/24",
+        "mlag_ips": {
+            "leaf_peer_l3": "10.255.251.0/24",
+            "mlag_peer": "10.255.252.0/24"
+        },
+        "vxlan_vlan_aware_bundles": false,
+        "inventory": {
+            "spine": {
+                "platform": "vEOS-LAB",
+                "bgp_as": 65100,
+                "leaf_as_range": "65101-65132",
+                "nodes": [
+                    {
+                        "hostname": "DC1-SPINE1",
+                        "mgmt_ip": "192.168.122.11"
+                    },
+                    {
+                        "hostname": "DC1-SPINE2",
+                        "mgmt_ip": "192.168.122.12"
+                    }
+                ]
+            },
+            "l3leaf": {
+                "platform": "vEOS-LAB",
+                "spines": [
+                    "DC1-SPINE1",
+                    "DC1-SPINE2"
+                ],
+                "uplink_to_spine_interfaces": [
+                    "Ethernet1",
+                    "Ethernet2"
+                ],
+                "mlag_interfaces": [
+                    "Ethernet3",
+                    "Ethernet4"
+                ],
+                "node_groups": [
+                    {
+                        "group_name": "DC1_LEAF1",
+                        "bgp_as": 65001,
+                        "nodes": [
+                            {
+                                "hostname": "DC1-LEAF1A",
+                                "mgmt_ip": "192.168.122.21"
+                            },
+                            {
+                                "hostname": "DC1-LEAF1B",
+                                "mgmt_ip": "192.168.122.22"
+                            }
+                        ]
+                    },
+                    {
+                        "group_name": "DC1_LEAF2",
+                        "bgp_as": 65002,
+                        "nodes": [
+                            {
+                                "hostname": "DC1-LEAF2A",
+                                "mgmt_ip": "192.168.122.23"
+                            },
+                            {
+                                "hostname": "DC1-LEAF2B",
+                                "mgmt_ip": "192.168.122.24"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
     "inventory": {
         "dc_list": [
             {
                 "dc_name": "DC1",
-                "underlay_p2p_network_summary": "172.31.255.0/24",
-                "overlay_loopback_network_summary": "192.168.255.0/24",
-                "vtep_loopback_network_summary": "192.168.254.0/24",
-                "mlag_ips": {
-                    "leaf_peer_l3": "10.255.251.0/24",
-                    "mlag_peer": "10.255.252.0/24"
-                },
                 "vxlan_vlan_aware_bundles": false,
                 "bgp_peer_groups": {
                     "IPv4_UNDERLAY_PEERS": {
@@ -234,13 +301,7 @@
                     "distance bgp 20 200 200",
                     "graceful-restart restart-time 300",
                     "graceful-restart"
-                ],
-                "p2p_uplinks_mtu": 1500,
-                "bfd_multihop": {
-                    "interval": 1200,
-                    "min_rx": 1200,
-                    "multiplier": 3
-                }
+                ]
             }
         ]
     }

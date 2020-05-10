@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+{# #!/usr/bin/env python3
 
 import yaml
 import json
@@ -197,4 +197,4 @@ for dc in {{ cookiecutter.inventory.dc_list }}:
     write_yaml(f"group_vars/{dc['dc_name']}_SERVERS.yml", {
         'servers': dc['servers'],
         'port_profiles': dc['port_profiles']
-    })
+    }) #}

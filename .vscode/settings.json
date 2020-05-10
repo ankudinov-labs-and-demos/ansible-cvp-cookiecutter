@@ -1,7 +1,7 @@
 {
     "files.associations": {
         "*.yml": "jinja-yaml",
-        "*.py": "jinja-python",
+        "*.py": "jinja-py",
         "*.md": "jinja-markdown"
     }
 }

@@ -1,0 +1,22 @@
+---
+# DC group variables
+
+# Cloud Vision server information
+cvp_ingestauth_key: {{ cookiecutter.cvp.ingest_key }}
+cvp_instance_ip: {{ cookiecutter.cvp.host }}
+
+# lab local user
+local_users:
+  cvpadmin:
+    privilege: 15
+    role: network-admin
+    sha512_password: {{ cookiecutter.ansible_sha512_password }}
+
+# OOB Management network default gateway
+mgmt_gateway: {{ cookiecutter.mgmt_settings.oob_gateway }}
+
+# dns servers
+name_servers: {{ cookiecutter.mgmt_settings.name_server_list }}
+
+# NTP Servers IP or DNS name, first NTP server will be prefered, and sourced from Managment VRF
+ntp_servers: {{ cookiecutter.mgmt_settings.ntp_server_list }}

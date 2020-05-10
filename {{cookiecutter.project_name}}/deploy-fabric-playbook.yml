@@ -1,4 +1,4 @@
-{%- for dc in cookiecutter.inventory.dc_list %}
+{# {%- for dc in cookiecutter.inventory.dc_list %}
 ---
   - name: Build Switch configuration
     hosts: {{ dc.dc_name }}
@@ -51,4 +51,4 @@
           configlets_prefix: '{{ cookiecutter.cvp.configlets_prefix }}'
           device_filter: '{{ cookiecutter.cvp.device_filter }}'
           state: present
-{%- endfor %}
+{%- endfor %} #}
