@@ -61,19 +61,19 @@ l3leaf:
     spanning_tree_priority: 4096
     spanning_tree_mode: mstp
   node_groups:
-  {%- set _id = 0 %}
+  {%- set _count = [] %}
   {%- for node_group in cookiecutter.dc.inventory.l3leaf.node_groups %}
     {{ node_group.group_name }}:
       bgp_as: {{ node_group.bgp_as }}
       nodes:
       {%- for node in node_group.nodes %}
         {{ node.hostname }}:
-          {%- set _id = _id + loop.index %}
-          id: {{ _id | int }}
+          {%- if _count.append('1') %}{%- endif%}
+          id: {{ _count | length }}
           mgmt_ip: {{ node.mgmt_ip }}
           spine_interfaces:
           {%- for spine in cookiecutter.dc.inventory.spine.nodes %}
-          - Ethernet{{ _id | int }}
+          - Ethernet{{ _count | length }}
           {%- endfor %}
       {%- endfor %}
   {%- endfor %}
