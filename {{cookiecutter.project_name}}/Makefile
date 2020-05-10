@@ -23,9 +23,9 @@ build: ## Run ansible playbook to build EVPN Fabric configuration.
 # deploy: ## Run ansible playbook to deploy EVPN Fabric.
 # 	ansible-playbook dc1-fabric-deploy-cvp.yml --extra-vars "execute_tasks=true" --tags "build,provision,apply"
 
-# .PHONY: reset
-# reset: ## Run ansible playbook to reset all devices.
-# 	ansible-playbook dc1-fabric-reset-cvp.yml
+.PHONY: reset
+reset: ## Run ansible playbook to reset all devices.
+	ansible-playbook reset-fabric-playbook.yml
 
 # .PHONY: clean
 # clean: ## Delete previously generated outputs
@@ -84,6 +84,6 @@ install-requirements: ## Install python requirements
 # reset-docker: ## Run ansible playbook to reset all devices.
 # 	docker run -it --rm -v $(PWD):/project $(DOCKER_NAME):latest ansible-playbook dc1-fabric-reset-cvp.yml
 
-.PHONY: webdoc
-webdoc: ## Build documentation to publish static content
-	mkdocs build -f mkdocs.yml
+# .PHONY: webdoc
+# webdoc: ## Build documentation to publish static content
+# 	mkdocs build -f mkdocs.yml
