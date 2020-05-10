@@ -14,7 +14,19 @@
             "time.google.com",
             "0.fr.pool.ntp.org",
             "1.fr.pool.ntp.org"
-        ]
+        ],
+        "dhcp": {
+            "subnet": "192.168.122.0",
+            "netmask": "255.255.255.0",
+            "ranges": [
+                {
+                    "start": "192.168.122.11",
+                    "end": "192.168.122.29"
+                }
+            ],
+            "domain": "ztp",
+            "interface": "virbr0"
+        }
     },
     "cvp": {
         "host": "192.168.122.122",
@@ -41,11 +53,13 @@
                 "nodes": [
                     {
                         "hostname": "DC1-SPINE1",
-                        "mgmt_ip": "192.168.122.11"
+                        "mgmt_ip": "192.168.122.11",
+                        "mgmt_mac": "00:0c:29:78:01:00"
                     },
                     {
                         "hostname": "DC1-SPINE2",
-                        "mgmt_ip": "192.168.122.12"
+                        "mgmt_ip": "192.168.122.12",
+                        "mgmt_mac": "00:0c:29:78:02:00"
                     }
                 ]
             },
@@ -70,11 +84,13 @@
                         "nodes": [
                             {
                                 "hostname": "DC1-LEAF1A",
-                                "mgmt_ip": "192.168.122.21"
+                                "mgmt_ip": "192.168.122.21",
+                                "mgmt_mac": "00:0c:29:78:11:00"
                             },
                             {
                                 "hostname": "DC1-LEAF1B",
-                                "mgmt_ip": "192.168.122.22"
+                                "mgmt_ip": "192.168.122.22",
+                                "mgmt_mac": "00:0c:29:78:12:00"
                             }
                         ]
                     },
@@ -84,11 +100,13 @@
                         "nodes": [
                             {
                                 "hostname": "DC1-LEAF2A",
-                                "mgmt_ip": "192.168.122.23"
+                                "mgmt_ip": "192.168.122.23",
+                                "mgmt_mac": "00:0c:29:78:13:00"
                             },
                             {
                                 "hostname": "DC1-LEAF2B",
-                                "mgmt_ip": "192.168.122.24"
+                                "mgmt_ip": "192.168.122.24",
+                                "mgmt_mac": "00:0c:29:78:14:00"
                             }
                         ]
                     }

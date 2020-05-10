@@ -11,7 +11,7 @@
         import_role:
           name: arista.avd.eos_config_deploy_cvp
         vars:
-          container_root: {{ cvp.container_root }}
-          configlets_prefix: {{ cvp.configlets_prefix }}
-          device_filter: {{ cvp.device_filter }}
+          container_root: {{ cookiecutter.cvp.container_root }}
+          configlets_prefix: {{ cookiecutter.cvp.configlets_prefix }}
+          device_filter: {{ cookiecutter.cvp.device_filter }}
           state: absent

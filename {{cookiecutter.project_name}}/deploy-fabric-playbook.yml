@@ -7,6 +7,7 @@
       - arista.avd
       - arista.cvp
     tasks:
+    {%- raw %}
       - name: 'create cvp structure config folder: {{documentation_dir_name}}'
         tags: [build, generate]
         file:
@@ -22,6 +23,7 @@
         tags: [build, generate]
         import_role:
           name: eos_cli_config_gen
+    {%- endraw %}
   
   - name: Configuration deployment with CVP
     hosts: cv_server
@@ -31,6 +33,7 @@
       - arista.avd
       - arista.cvp
     tasks:
+    {%- raw %}
       # - name: "Debug CVP facts from {{inventory_hostname}}"
       #   cv_facts:
       #     facts: devices
@@ -40,11 +43,12 @@
       # - name: display cvp_facts variable
       #   debug:
       #     var: cvp_facts
+    {%- endraw %}
       - name: run CVP provisioning
         import_role:
           name: arista.avd.eos_config_deploy_cvp
         vars:
-          container_root: {{ cvp.container_root }}
-          configlets_prefix: {{ cvp.configlets_prefix }}
-          device_filter: {{ cvp.device_filter }}
+          container_root: {{ cookiecutter.cvp.container_root }}
+          configlets_prefix: {{ cookiecutter.cvp.configlets_prefix }}
+          device_filter: {{ cookiecutter.cvp.device_filter }}
           state: present
