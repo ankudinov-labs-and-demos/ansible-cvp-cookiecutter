@@ -1,11 +1,11 @@
-{# ---
+---
   all:
     children:
       CVP:
         hosts:
           cv_server:
-            ansible_httpapi_host: {{ cookiecutter.ansible_host }}
-            ansible_host: {{ cookiecutter.ansible_host }}
+            ansible_httpapi_host: {{ cookiecutter.cvp.host }}
+            ansible_host: {{ cookiecutter.cvp.host }}
             ansible_user: {{ cookiecutter.ansible_user }}
             ansible_password: {{ cookiecutter.ansible_password }}
             ansible_connection: httpapi
@@ -16,41 +16,27 @@
             # Configuration to get Virtual Env information
             ansible_python_interpreter: $(which python3)
       # DC1_Fabric - EVPN Fabric running in home lab
-      {%- for dc in cookiecutter.inventory.dc_list %}
-      {{ dc.dc_name }}:
+      {{ cookiecutter.dc.name }}:
         children:
-          {{ dc.dc_name }}_FABRIC:
+          {{ cookiecutter.dc.name }}_FABRIC:
             children:
-            {%- if dc.group_list is defined %}
-              {%- for group in dc.group_list %}
-              {{ group.group_name }}:
-
-                {%- if group.host_list is defined %}
+              {{ cookiecutter.dc.name }}_SPINES:
                 hosts:
-                  {%- for host in group.host_list %}
-                  {{ host.hostname }}:
-                    ansible_host: {{ host.ansible_host }}
-                  {%- endfor %}
-                {%- endif %}
-
-                {%- if group.subgroup_list is defined %}
+                {%- for spine in cookiecutter.dc.inventory.spine.nodes %}
+                  {{ spine.hostname }}:
+                    ansible_host: {{ spine.mgmt_ip }}
+                {%- endfor %}
+              {{ cookiecutter.dc.name }}_L3LEAFS:
                 children:
-                  {%- for subgroup in group.subgroup_list %}
-                  {{ subgroup.subgroup_name }}:
-
-                  {%- if subgroup.host_list is defined %}
+                {%- for node_group in cookiecutter.dc.inventory.l3leaf.node_groups %}
+                  {{ node_group.group_name }}:
                     hosts:
-                  {%- for host in subgroup.host_list %}
-                      {{ host.hostname }}:
-                        ansible_host: {{ host.ansible_host }}
-                  {%- endfor %}
-                {%- endif %}
+                    {%- for node in node_group.nodes %}
+                      {{ node.hostname }}:
+                        ansible_host: {{ node.mgmt_ip }}
+                    {%- endfor %}
+                {%- endfor %}
 
-                  {%- endfor %}
-                {%- endif %}
-
-              {%- endfor %}
-            {%- endif %}
             vars:
               ansible_connection: httpapi
               ansible_network_os: eos
@@ -61,10 +47,10 @@
               ansible_become_method: enable
               ansible_httpapi_use_ssl: true
               ansible_httpapi_validate_certs: false
-          {{ dc.dc_name }}_TENANTS_NETWORKS:
+
+          {{ cookiecutter.dc.name }}_TENANTS_NETWORKS:
             children:
-              LEAFS:
-          {{ dc.dc_name }}_SERVERS:
+              {{ cookiecutter.dc.name }}_L3LEAFS:
+          {{ cookiecutter.dc.name }}_SERVERS:
             children:
-              LEAFS:
-      {%- endfor %} #}
+              {{ cookiecutter.dc.name }}_L3LEAFS:
