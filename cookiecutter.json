@@ -18,13 +18,14 @@
     },
     "cvp": {
         "ingest_key": "arista123",
-        "container_root": "AVD_DEMO",
-        "configlets_prefix": "ADV-"
+        "container_root": "DC1_FABRIC",
+        "configlets_prefix": "DC1-AVD",
+        "device_filter": "DC1"
     },
     "inventory": {
         "dc_list": [
             {
-                "dc_name": "AVD_DEMO_DC",
+                "dc_name": "DC1",
                 "underlay_p2p_network_summary": "172.31.255.0/24",
                 "overlay_loopback_network_summary": "192.168.255.0/24",
                 "vtep_loopback_network_summary": "192.168.254.0/24",
@@ -55,8 +56,8 @@
                         "platform": "vEOS-LAB",
                         "bgp_as": 65100,
                         "spines": [
-                            "SPINE1",
-                            "SPINE2"
+                            "DC1_SPINE1",
+                            "DC1_SPINE2"
                         ],
                         "uplink_to_spine_interfaces": [
                             "Ethernet1",
@@ -72,27 +73,27 @@
                 },
                 "group_list": [
                     {
-                        "group_name": "SPINES",
+                        "group_name": "DC1_SPINES",
                         "host_list": [
                             {
-                                "hostname": "SPINE1",
+                                "hostname": "DC1_SPINE1",
                                 "ansible_host": "192.168.122.11"
                             },
                             {
-                                "hostname": "SPINE2",
+                                "hostname": "DC1_SPINE2",
                                 "ansible_host": "192.168.122.12"
                             }
                         ]
                     },
                     {
-                        "group_name": "LEAFS",
+                        "group_name": "DC1_LEAFS",
                         "subgroup_list": [
                             {
                                 "subgroup_name": "MLAG1",
                                 "bgp_as": 65001,
                                 "host_list": [
                                     {
-                                        "hostname": "LEAF1A",
+                                        "hostname": "DC1_LEAF1A",
                                         "ansible_host": "192.168.122.21",
                                         "spine_interfaces": [
                                             "Ethernet1",
@@ -100,7 +101,7 @@
                                         ]
                                     },
                                     {
-                                        "hostname": "LEAF1B",
+                                        "hostname": "DC1_LEAF1B",
                                         "ansible_host": "192.168.122.22",
                                         "spine_interfaces": [
                                             "Ethernet2",
@@ -114,7 +115,7 @@
                                 "bgp_as": 65002,
                                 "host_list": [
                                     {
-                                        "hostname": "LEAF2A",
+                                        "hostname": "DC1_LEAF2A",
                                         "ansible_host": "192.168.122.23",
                                         "spine_interfaces": [
                                             "Ethernet3",
@@ -122,7 +123,7 @@
                                         ]
                                     },
                                     {
-                                        "hostname": "LEAF2B",
+                                        "hostname": "DC1_LEAF2B",
                                         "ansible_host": "192.168.122.24",
                                         "spine_interfaces": [
                                             "Ethernet4",
@@ -183,8 +184,8 @@
                                     "Ethernet5"
                                 ],
                                 "switches": [
-                                    "LEAF1A",
-                                    "LEAF1B"
+                                    "DC1_LEAF1A",
+                                    "DC1_LEAF1B"
                                 ],
                                 "profile": "TENANT_A",
                                 "port_channel": {
@@ -209,8 +210,8 @@
                                     "Ethernet5"
                                 ],
                                 "switches": [
-                                    "LEAF2A",
-                                    "LEAF2B"
+                                    "DC1_LEAF2A",
+                                    "DC1_LEAF2B"
                                 ],
                                 "profile": "TENANT_A",
                                 "port_channel": {

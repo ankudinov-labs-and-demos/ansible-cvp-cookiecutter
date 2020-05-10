@@ -58,31 +58,37 @@ subnet 192.168.122.0 netmask 255.255.255.0 {
 }
 
 host S1 {
+  option host-name "DC1-SPINE1";
   hardware ethernet 00:0c:29:78:01:00;
   fixed-address 192.168.122.11;
 }
 
 host S2 {
+  option host-name "DC1-SPINE2";
   hardware ethernet 00:0c:29:78:02:00;
   fixed-address 192.168.122.12;
 }
 
 host L1 {
+  option host-name "DC1-LEAF1A";
   hardware ethernet 00:0c:29:78:11:00;
   fixed-address 192.168.122.21;
 }
 
 host L2 {
+  option host-name "DC1-LEAF1B";
   hardware ethernet 00:0c:29:78:12:00;
   fixed-address 192.168.122.22;
 }
 
 host L3 {
+  option host-name "DC1-LEAF2A";
   hardware ethernet 00:0c:29:78:13:00;
   fixed-address 192.168.122.23;
 }
 
 host L4 {
+  option host-name "DC1-LEAF2B";
   hardware ethernet 00:0c:29:78:14:00;
   fixed-address 192.168.122.24;
 }

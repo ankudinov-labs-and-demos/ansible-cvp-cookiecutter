@@ -127,7 +127,7 @@ for dc in {{ cookiecutter.inventory.dc_list }}:
     }
     write_yaml("group_vars/SPINES.yml", {'type': 'spine'})  # add spine type
     # add spine parameters to group vars for every spine in the inventory
-    spine_group_entry = jp2query(dc, '$..group_list[*][?(@.group_name = "SPINES")]')  # jsonpath query
+    spine_group_entry = jp2query(dc, '$..group_list[*][?(@.group_name = "DC1_SPINES")]')  # jsonpath query
     spine_list = spine_group_entry[0]['host_list']  # we only expect single match
     for index, spine in enumerate(spine_list):
         fabric_vars['spine']['nodes'].update({
