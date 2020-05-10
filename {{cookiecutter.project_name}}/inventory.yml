@@ -1,0 +1,56 @@
+---
+  all:
+    children:
+      CVP:
+        hosts:
+          cv_server:
+            ansible_httpapi_host: {{ cookiecutter.cvp.host }}
+            ansible_host: {{ cookiecutter.cvp.host }}
+            ansible_user: {{ cookiecutter.ansible_user }}
+            ansible_password: {{ cookiecutter.ansible_password }}
+            ansible_connection: httpapi
+            ansible_httpapi_use_ssl: true
+            ansible_httpapi_validate_certs: false
+            ansible_network_os: eos
+            ansible_httpapi_port: 443
+            # Configuration to get Virtual Env information
+            ansible_python_interpreter: $(which python3)
+      # DC1_Fabric - EVPN Fabric running in home lab
+      {{ cookiecutter.dc.name }}:
+        children:
+          {{ cookiecutter.dc.name }}_FABRIC:
+            children:
+              {{ cookiecutter.dc.name }}_SPINES:
+                hosts:
+                {%- for spine in cookiecutter.dc.inventory.spine.nodes %}
+                  {{ spine.hostname }}:
+                    ansible_host: {{ spine.mgmt_ip }}
+                {%- endfor %}
+              {{ cookiecutter.dc.name }}_L3LEAFS:
+                children:
+                {%- for node_group in cookiecutter.dc.inventory.l3leaf.node_groups %}
+                  {{ node_group.group_name }}:
+                    hosts:
+                    {%- for node in node_group.nodes %}
+                      {{ node.hostname }}:
+                        ansible_host: {{ node.mgmt_ip }}
+                    {%- endfor %}
+                {%- endfor %}
+
+            vars:
+              ansible_connection: httpapi
+              ansible_network_os: eos
+              ansible_user: {{ cookiecutter.ansible_user }}
+              # should use vault for passwords
+              ansible_ssh_pass: {{ cookiecutter.ansible_password }}
+              ansible_become: true
+              ansible_become_method: enable
+              ansible_httpapi_use_ssl: true
+              ansible_httpapi_validate_certs: false
+
+          {{ cookiecutter.dc.name }}_TENANTS_NETWORKS:
+            children:
+              {{ cookiecutter.dc.name }}_L3LEAFS:
+          {{ cookiecutter.dc.name }}_SERVERS:
+            children:
+              {{ cookiecutter.dc.name }}_L3LEAFS:

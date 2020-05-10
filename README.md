@@ -5,8 +5,9 @@
 - [ANSIBLE-CVP COOKIECUTTER](#ansible-cvp-cookiecutter)
   - [Description](#description)
   - [Lab Topology](#lab-topology)
+  - [Clone Cookiecutter Repository](#clone-cookiecutter-repository)
   - [Preparing the Lab](#preparing-the-lab)
-  - [HOW TO RUN](#how-to-run)
+  - [How to Provision Lab Network](#how-to-provision-lab-network)
 
 <!-- /TOC -->
 
@@ -24,6 +25,23 @@ The lab must be created before using cookiecutter using EVE-NG, GNS3, KVM or sim
 
 All VMs in the lab should have access to a shared OOB network with a linux machine used to provide DHCP service and to route packets to CVP.
 
+## Clone Cookiecutter Repository
+
+To clone cookiecutter repository run following commands:
+
+```console
+python3 -m venv .ccvenv
+source .ccvenv/bin/activate
+pip install cookiecutter
+cookiecutter gh:ankudinov-labs-and-demos/ansible-cvp-cookiecutter --no-input --checkout master --overwrite-if-exists
+```
+
+If you want to use different settings, fork/clone the repository and create your own cookiecutter.json first.
+
+Change your current working directory to the project directory created by cookiecutter and run `setup.sh`. This script will create Python virtual environment called `.venv` and install required dependencies.
+
+If you are using VSCode, type `code .`
+
 ## Preparing the Lab
 
 Before using the cookiecutter the switches in the lab must be registered on CVP as part of ZTP process.
@@ -37,65 +55,15 @@ sudo apt install isc-dhcp-server
 sudo vi /etc/dhcp/dhcpd.conf
 systemctl enable isc-dhcp-server
 systemctl start isc-dhcp-server
+sudo systemctl status isc-dhcp-server
 ```
 
-dhcpd.conf example:
-
-```text
-#
-# DHCP Server Configuration file.
-#   see /usr/share/doc/dhcp*/dhcpd.conf.example
-#   see dhcpd.conf(5) man page
-#
-
-subnet 192.168.122.0 netmask 255.255.255.0 {
-  range 192.168.122.11 192.168.122.29;
-  option subnet-mask 255.255.255.0;
-  option domain-name "ztp";
-  option routers 192.168.122.1;
-  interface virbr0;
-  option bootfile-name "http://192.168.122.122/ztp/bootstrap";
-}
-
-host S1 {
-  hardware ethernet 00:0c:29:78:01:00;
-  fixed-address 192.168.122.11;
-}
-
-host S2 {
-  hardware ethernet 00:0c:29:78:02:00;
-  fixed-address 192.168.122.12;
-}
-
-host L1 {
-  hardware ethernet 00:0c:29:78:11:00;
-  fixed-address 192.168.122.21;
-}
-
-host L2 {
-  hardware ethernet 00:0c:29:78:12:00;
-  fixed-address 192.168.122.22;
-}
-
-host L3 {
-  hardware ethernet 00:0c:29:78:13:00;
-  fixed-address 192.168.122.23;
-}
-
-host L4 {
-  hardware ethernet 00:0c:29:78:14:00;
-  fixed-address 192.168.122.24;
-}
-```
+dhcpd.conf file will be generated automatically by cookiecutter. Just copy-paste the content or use it as an example to adjust your DHCP server settings.
 
 All devices should register in Undefined container before you start:
 ![initial cvp state](media/initial_cvp_state.png)
 
-## HOW TO RUN
+## How to Provision Lab Network
 
-```console
-python3 -m venv .ccvenv
-source .ccvenv/bin/activate
-pip install cookiecutter
-cookiecutter gh:ankudinov-labs-and-demos/ansible-cvp-cookiecutter
-```
+1. Activate Python virtual environment with `source .venv/bin/activate`
+2. Run `ansible-playbook deploy-fabric-playbook.yml` or `make build`

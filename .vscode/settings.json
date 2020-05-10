@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.yml": "jinja-yaml",
+        "*.py": "jinja-py",
+        "{{cookiecutter.project.name}}/*.md": "jinja-md",
+        "*.conf": "jinja-properties"
+    }
+}

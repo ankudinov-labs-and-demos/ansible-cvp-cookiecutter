@@ -1,8 +1,8 @@
 {
-    "demo_name": "ansible_cvp_demo",
+    "project_name": "ansible_cvp",
     "ansible_user": "cvpadmin",
     "ansible_password": "arista123",
-    "ansible_host": "192.168.122.122",
+    "ansible_sha512_password": "$6$zI/qBiVV4.s9KYQM$dkad1DN7VXeV9YVm0HKI6rk2lmKPsBLjx/XvC0Zkv6AkVRZ6j44P9rUK.TL99YU37ukhraw3MwKe5Be3RKe2z1",
     "mgmt_settings": {
         "oob_gateway": "192.168.122.1",
         "subnet_mask_length": 24,
@@ -14,232 +14,198 @@
             "time.google.com",
             "0.fr.pool.ntp.org",
             "1.fr.pool.ntp.org"
-        ]
+        ],
+        "dhcp": {
+            "subnet": "192.168.122.0",
+            "netmask": "255.255.255.0",
+            "ranges": [
+                {
+                    "start": "192.168.122.11",
+                    "end": "192.168.122.29"
+                }
+            ],
+            "domain": "ztp",
+            "interface": "virbr0"
+        }
     },
     "cvp": {
+        "host": "192.168.122.122",
         "ingest_key": "arista123",
-        "container_root": "AVD_DEMO",
-        "configlets_prefix": "ADV-"
+        "container_root": "DC1_FABRIC",
+        "configlets_prefix": "DC1-AVD",
+        "device_filter": "DC1"
     },
-    "inventory": {
-        "dc_list": [
-            {
-                "dc_name": "AVD_DEMO_DC",
-                "underlay_p2p_network_summary": "172.31.255.0/24",
-                "overlay_loopback_network_summary": "192.168.255.0/24",
-                "vtep_loopback_network_summary": "192.168.254.0/24",
-                "mlag_ips": {
-                    "leaf_peer_l3": "10.255.251.0/24",
-                    "mlag_peer": "10.255.252.0/24"
-                },
-                "vxlan_vlan_aware_bundles": false,
-                "bgp_peer_groups": {
-                    "IPv4_UNDERLAY_PEERS": {
-                        "password": "AQQvKeimxJu+uGQ/yYvv9w=="
-                    },
-                    "EVPN_OVERLAY_PEERS": {
-                        "password": "q+VNViP5i4rVjW1cxFv2wA=="
-                    },
-                    "MLAG_IPv4_UNDERLAY_PEER": {
-                        "password": "vnEaG8gMeQf3d3cN6PktXQ=="
-                    }
-                },
-                "spine": {
-                    "platform": "vEOS-LAB",
-                    "bgp_as": 65001,
-                    "leaf_as_range": "65101-65132"
-                },
-                "l3leaf": {
-                    "defaults": {
-                        "virtual_router_mac_address": "00:1c:73:00:dc:01",
-                        "platform": "vEOS-LAB",
-                        "bgp_as": 65100,
-                        "spines": [
-                            "SPINE1",
-                            "SPINE2"
-                        ],
-                        "uplink_to_spine_interfaces": [
-                            "Ethernet1",
-                            "Ethernet2"
-                        ],
-                        "mlag_interfaces": [
-                            "Ethernet3",
-                            "Ethernet4"
-                        ],
-                        "spanning_tree_priority": 4096,
-                        "spanning_tree_mode": "mstp"
-                    }
-                },
-                "group_list": [
+    "dc": {
+        "name": "DC1",
+        "underlay_p2p_network_summary": "172.31.255.0/24",
+        "overlay_loopback_network_summary": "192.168.255.0/24",
+        "vtep_loopback_network_summary": "192.168.254.0/24",
+        "mlag_ips": {
+            "leaf_peer_l3": "10.255.251.0/24",
+            "mlag_peer": "10.255.252.0/24"
+        },
+        "vxlan_vlan_aware_bundles": false,
+        "inventory": {
+            "spine": {
+                "platform": "vEOS-LAB",
+                "bgp_as": 65100,
+                "leaf_as_range": "65101-65132",
+                "nodes": [
                     {
-                        "group_name": "SPINES",
-                        "host_list": [
-                            {
-                                "hostname": "SPINE1",
-                                "ansible_host": "192.168.122.11"
-                            },
-                            {
-                                "hostname": "SPINE2",
-                                "ansible_host": "192.168.122.12"
-                            }
-                        ]
+                        "hostname": "DC1-SPINE1",
+                        "mgmt_ip": "192.168.122.11",
+                        "mgmt_mac": "00:0c:29:78:01:00"
                     },
                     {
-                        "group_name": "LEAFS",
-                        "subgroup_list": [
-                            {
-                                "subgroup_name": "MLAG1",
-                                "bgp_as": 65001,
-                                "host_list": [
-                                    {
-                                        "hostname": "LEAF1A",
-                                        "ansible_host": "192.168.122.21",
-                                        "spine_interfaces": [
-                                            "Ethernet1",
-                                            "Ethernet1"
-                                        ]
-                                    },
-                                    {
-                                        "hostname": "LEAF1B",
-                                        "ansible_host": "192.168.122.22",
-                                        "spine_interfaces": [
-                                            "Ethernet2",
-                                            "Ethernet2"
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "subgroup_name": "MLAG2",
-                                "bgp_as": 65002,
-                                "host_list": [
-                                    {
-                                        "hostname": "LEAF2A",
-                                        "ansible_host": "192.168.122.23",
-                                        "spine_interfaces": [
-                                            "Ethernet3",
-                                            "Ethernet3"
-                                        ]
-                                    },
-                                    {
-                                        "hostname": "LEAF2B",
-                                        "ansible_host": "192.168.122.24",
-                                        "spine_interfaces": [
-                                            "Ethernet4",
-                                            "Ethernet4"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
+                        "hostname": "DC1-SPINE2",
+                        "mgmt_ip": "192.168.122.12",
+                        "mgmt_mac": "00:0c:29:78:02:00"
                     }
+                ]
+            },
+            "l3leaf": {
+                "platform": "vEOS-LAB",
+                "spines": [
+                    "DC1-SPINE1",
+                    "DC1-SPINE2"
                 ],
-                "tenants": {
-                    "Tenant_A": {
-                        "mac_vrf_vni_base": 10000,
-                        "vrfs": {
-                            "Tenant_A_OP_Zone": {
-                                "vrf_vni": 10,
-                                "vtep_diagnostic": {
-                                    "loopback": 100,
-                                    "loopback_ip_range": "10.255.1.0/24"
-                                },
-                                "svis": {
-                                    "110": {
-                                        "name": "Tenant_A_OP_Zone_1",
-                                        "tags": [
-                                            "opzone"
-                                        ],
-                                        "enabled": true,
-                                        "ip_subnet": "10.1.10.0/24"
-                                    }
-                                }
+                "uplink_to_spine_interfaces": [
+                    "Ethernet1",
+                    "Ethernet2"
+                ],
+                "mlag_interfaces": [
+                    "Ethernet3",
+                    "Ethernet4"
+                ],
+                "node_groups": [
+                    {
+                        "group_name": "DC1_LEAF1",
+                        "bgp_as": 65001,
+                        "nodes": [
+                            {
+                                "hostname": "DC1-LEAF1A",
+                                "mgmt_ip": "192.168.122.21",
+                                "mgmt_mac": "00:0c:29:78:11:00"
+                            },
+                            {
+                                "hostname": "DC1-LEAF1B",
+                                "mgmt_ip": "192.168.122.22",
+                                "mgmt_mac": "00:0c:29:78:12:00"
                             }
+                        ]
+                    },
+                    {
+                        "group_name": "DC1_LEAF2",
+                        "bgp_as": 65002,
+                        "nodes": [
+                            {
+                                "hostname": "DC1-LEAF2A",
+                                "mgmt_ip": "192.168.122.23",
+                                "mgmt_mac": "00:0c:29:78:13:00"
+                            },
+                            {
+                                "hostname": "DC1-LEAF2B",
+                                "mgmt_ip": "192.168.122.24",
+                                "mgmt_mac": "00:0c:29:78:14:00"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        "tenants": [
+            {
+                "name": "Tenant_A",
+                "mac_vrf_vni_base": 10000,
+                "vrfs": [
+                    {
+                        "name": "Tenant_A_OP_Zone",
+                        "vrf_vni": 10,
+                        "vtep_diagnostic": {
+                            "loopback": 100,
+                            "loopback_ip_range": "10.255.1.0/24"
+                        },
+                        "svis": [
+                            {
+                                "number": 110,
+                                "name": "Tenant_A_OP_Zone_1",
+                                "tags": [
+                                    "opzone"
+                                ],
+                                "enabled": true,
+                                "ip_subnet": "10.1.10.0/24"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "port_profiles": [
+            {
+                "name": "TENANT_A",
+                "mode": "access",
+                "vlans": "110"
+            },
+            {
+                "name": "TENANT_B",
+                "mode": "trunk",
+                "vlans": "210-211"
+            }
+        ],
+        "servers": [
+            {
+                "name": "server01",
+                "rack": "RackA",
+                "adapters": [
+                    {
+                        "type": "nic",
+                        "server_ports": [
+                            "Eth1",
+                            "Eth2"
+                        ],
+                        "switch_ports": [
+                            "Ethernet5",
+                            "Ethernet5"
+                        ],
+                        "switches": [
+                            "DC1_LEAF1A",
+                            "DC1_LEAF1B"
+                        ],
+                        "profile": "TENANT_A",
+                        "port_channel": {
+                            "state": "present",
+                            "description": "PortChanne1",
+                            "mode": "active"
                         }
                     }
-                },
-                "port_profiles": {
-                    "TENANT_A": {
-                        "mode": "access",
-                        "vlans": "110"
-                    },
-                    "TENANT_B": {
-                        "mode": "trunk",
-                        "vlans": "210-211"
+                ]
+            },
+            {
+                "name": "server02",
+                "rack": "RackB",
+                "adapters": [
+                    {
+                        "type": "nic",
+                        "server_ports": [
+                            "Eth1",
+                            "Eth2"
+                        ],
+                        "switch_ports": [
+                            "Ethernet5",
+                            "Ethernet5"
+                        ],
+                        "switches": [
+                            "DC1_LEAF2A",
+                            "DC1_LEAF2B"
+                        ],
+                        "profile": "TENANT_A",
+                        "port_channel": {
+                            "state": "present",
+                            "description": "PortChanne1",
+                            "mode": "active"
+                        }
                     }
-                },
-                "servers": {
-                    "server01": {
-                        "rack": "RackA",
-                        "adapters": [
-                            {
-                                "type": "nic",
-                                "server_ports": [
-                                    "Eth1",
-                                    "Eth2"
-                                ],
-                                "switch_ports": [
-                                    "Ethernet5",
-                                    "Ethernet5"
-                                ],
-                                "switches": [
-                                    "LEAF1A",
-                                    "LEAF1B"
-                                ],
-                                "profile": "TENANT_A",
-                                "port_channel": {
-                                    "state": "present",
-                                    "description": "PortChanne1",
-                                    "mode": "active"
-                                }
-                            }
-                        ]
-                    },
-                    "server02": {
-                        "rack": "RackB",
-                        "adapters": [
-                            {
-                                "type": "nic",
-                                "server_ports": [
-                                    "Eth1",
-                                    "Eth2"
-                                ],
-                                "switch_ports": [
-                                    "Ethernet5",
-                                    "Ethernet5"
-                                ],
-                                "switches": [
-                                    "LEAF2A",
-                                    "LEAF2B"
-                                ],
-                                "profile": "TENANT_A",
-                                "port_channel": {
-                                    "state": "present",
-                                    "description": "PortChanne1",
-                                    "mode": "active"
-                                }
-                            }
-                        ]
-                    }
-                },
-                "spine_bgp_defaults": [
-                    "no bgp default ipv4-unicast",
-                    "distance bgp 20 200 200",
-                    "graceful-restart restart-time 300",
-                    "graceful-restart"
-                ],
-                "leaf_bgp_defaults": [
-                    "no bgp default ipv4-unicast",
-                    "distance bgp 20 200 200",
-                    "graceful-restart restart-time 300",
-                    "graceful-restart"
-                ],
-                "p2p_uplinks_mtu": 1500,
-                "bfd_multihop": {
-                    "interval": 1200,
-                    "min_rx": 1200,
-                    "multiplier": 3
-                }
+                ]
             }
         ]
     }

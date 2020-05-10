@@ -1,0 +1,24 @@
+port_profiles:
+{%- for port_profile in cookiecutter.dc.port_profiles %}
+  {{ port_profile.name }}:
+    mode: {{ port_profile.mode }}
+    vlans: {{ port_profile.vlans }}
+{%- endfor %}
+
+servers:
+{%- for server in cookiecutter.dc.servers %}
+  {{ server.name }}:
+    rack: {{ server.rack }}
+    adapters:
+    {%- for adapter in server.adapters %}
+    - type: {{ adapter.type }}
+      server_ports: {{ adapter.server_ports }}
+      switch_ports: {{ adapter.switch_ports }}
+      switches: {{ adapter.switches }}
+      profile: {{ adapter.profile }} 
+      port_channel:
+        state: {{ adapter.port_channel.state }}
+        description: {{ adapter.port_channel.description }}
+        mode:  {{ adapter.port_channel.mode }}
+    {%- endfor %}
+{%- endfor %}
