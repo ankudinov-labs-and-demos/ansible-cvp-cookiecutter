@@ -1,0 +1,21 @@
+tenants:
+{%- for tenant in cookiecutter.dc.tenants %}
+  {{ tenant.name }}:
+    mac_vrf_vni_base: {{ tenant.mac_vrf_vni_base | int }}
+    vrfs:
+    {%- for vrf in tenant.vrfs %}
+      {{ vrf.name }}:
+      vrf_vni: {{ vrf.vrf_vni | int }}
+      vtep_diagnostic:
+        loopback: {{ vrf.vtep_diagnostic.loopback | int }}
+        loopback_ip_range: {{ vrf.vtep_diagnostic.loopback_ip_range }}
+      svis:
+      {%- for svi in vrf.svis %}
+        {{ svi.number | int }}:
+          name: {{ svi.name }}
+          enabled: {{ svi.enabled }}
+          ip_subnet: {{ svi.ip_subnet }}
+          tags: {{ svi.tags }}
+      {%- endfor %}
+    {%- endfor %}
+{%- endfor %}

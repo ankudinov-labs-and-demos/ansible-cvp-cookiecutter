@@ -67,67 +67,53 @@ dc:
         - hostname: DC1-LEAF2B
           mgmt_ip: 192.168.122.24
 
+  tenants:
+    # Tenant A Specific Information - VRFs / VLANs
+    - name: Tenant_A
+      mac_vrf_vni_base: 10000
+      vrfs:
+      - name: Tenant_A_OP_Zone
+        vrf_vni: 10
+        vtep_diagnostic:
+          loopback: 100
+          loopback_ip_range: 10.255.1.0/24
+        svis:
+        - number: 110
+          name: Tenant_A_OP_Zone_1
+          tags: [opzone]
+          enabled: true
+          ip_subnet: 10.1.10.0/24
 
+  port_profiles:
+    TENANT_A:
+      mode: access
+      vlans: "110"
+    TENANT_B:
+      mode: trunk
+      vlans: "210-211"
 
-
-
-
-
-
-
-
-inventory:
-  dc_list:
-    - dc_name: DC1
-
-      tenants:
-        # Tenant A Specific Information - VRFs / VLANs
-        Tenant_A:
-          mac_vrf_vni_base: 10000
-          vrfs:
-            Tenant_A_OP_Zone:
-              vrf_vni: 10
-              vtep_diagnostic:
-                loopback: 100
-                loopback_ip_range: 10.255.1.0/24
-              svis:
-                110:
-                  name: Tenant_A_OP_Zone_1
-                  tags: [opzone]
-                  enabled: true
-                  ip_subnet: 10.1.10.0/24
-
-      port_profiles:
-        TENANT_A:
-          mode: access
-          vlans: "110"
-        TENANT_B:
-          mode: trunk
-          vlans: "210-211"
-
-      servers:
-        server01:
-          rack: RackA
-          adapters:
-            - type: nic
-              server_ports: [Eth1, Eth2]
-              switch_ports: [Ethernet5, Ethernet5]
-              switches: [DC1_LEAF1A, DC1_LEAF1B]
-              profile: TENANT_A
-              port_channel:
-                state: present
-                description: PortChanne1
-                mode: active
-        server02:
-          rack: RackB
-          adapters:
-            - type: nic
-              server_ports: [Eth1, Eth2]
-              switch_ports: [Ethernet5, Ethernet5]
-              switches: [DC1_LEAF2A, DC1_LEAF2B]
-              profile: TENANT_A
-              port_channel:
-                state: present
-                description: PortChanne1
-                mode: active
-
+  servers:
+    server01:
+      rack: RackA
+      adapters:
+        - type: nic
+          server_ports: [Eth1, Eth2]
+          switch_ports: [Ethernet5, Ethernet5]
+          switches: [DC1_LEAF1A, DC1_LEAF1B]
+          profile: TENANT_A
+          port_channel:
+            state: present
+            description: PortChanne1
+            mode: active
+    server02:
+      rack: RackB
+      adapters:
+        - type: nic
+          server_ports: [Eth1, Eth2]
+          switch_ports: [Ethernet5, Ethernet5]
+          switches: [DC1_LEAF2A, DC1_LEAF2B]
+          profile: TENANT_A
+          port_channel:
+            state: present
+            description: PortChanne1
+            mode: active
