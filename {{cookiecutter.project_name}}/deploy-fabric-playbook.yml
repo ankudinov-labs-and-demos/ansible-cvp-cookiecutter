@@ -1,18 +1,12 @@
-{# {%- for dc in cookiecutter.inventory.dc_list %}
 ---
   - name: Build Switch configuration
-    hosts: {{ dc.dc_name }}
+    hosts: {{ cookiecutter.dc.name }}
     connection: local
     gather_facts: false
     collections:
       - arista.avd
       - arista.cvp
     tasks:
-      # - name: 'reset local folders for output'
-      #   tags: [build, generate]
-      #   import_role:
-      #     name: arista.avd.build_output_folders
-{%- raw %}
       - name: 'create cvp structure config folder: {{documentation_dir_name}}'
         tags: [build, generate]
         file:
@@ -20,7 +14,6 @@
           state: directory
           mode: 0755
         delegate_to: localhost
-{%- endraw %}
       - name: generate intended variables
         tags: [build, generate]
         import_role:
@@ -29,11 +22,6 @@
         tags: [build, generate]
         import_role:
           name: eos_cli_config_gen
-      # - name: 'Generate documentation with mkdocs'
-      #   tags: [build, generate]
-      #   import_role:
-      #     name: publish-documentation
-      #   run_once: True
   
   - name: Configuration deployment with CVP
     hosts: cv_server
@@ -43,12 +31,20 @@
       - arista.avd
       - arista.cvp
     tasks:
+      # - name: "Debug CVP facts from {{inventory_hostname}}"
+      #   cv_facts:
+      #     facts: devices
+      #   register: cvp_facts
+      #   tags:
+      #     - always
+      # - name: display cvp_facts variable
+      #   debug:
+      #     var: cvp_facts
       - name: run CVP provisioning
         import_role:
           name: arista.avd.eos_config_deploy_cvp
         vars:
-          container_root: '{{ cookiecutter.cvp.container_root }}'
-          configlets_prefix: '{{ cookiecutter.cvp.configlets_prefix }}'
-          device_filter: '{{ cookiecutter.cvp.device_filter }}'
+          container_root: {{ cvp.container_root }}
+          configlets_prefix: {{ cvp.configlets_prefix }}
+          device_filter: {{ cvp.device_filter }}
           state: present
-{%- endfor %} #}
