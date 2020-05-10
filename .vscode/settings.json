@@ -2,6 +2,7 @@
     "files.associations": {
         "*.yml": "jinja-yaml",
         "*.py": "jinja-py",
-        "*.md": "jinja-md"
+        "*.md": "jinja-md",
+        "*.conf": "jinja-properties"
     }
 }
