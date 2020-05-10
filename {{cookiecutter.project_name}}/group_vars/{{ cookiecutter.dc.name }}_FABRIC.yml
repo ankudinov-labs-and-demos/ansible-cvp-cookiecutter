@@ -70,7 +70,7 @@ l3leaf:
         {{ node.hostname }}:
           {%- if _count.append('1') %}{%- endif%}
           id: {{ _count | length }}
-          mgmt_ip: {{ node.mgmt_ip }}
+          mgmt_ip: {{ node.mgmt_ip }}/{{ cookiecutter.mgmt_settings.subnet_mask_length }}
           spine_interfaces:
           {%- for spine in cookiecutter.dc.inventory.spine.nodes %}
           - Ethernet{{ _count | length }}
