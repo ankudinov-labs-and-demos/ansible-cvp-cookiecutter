@@ -1,7 +1,7 @@
 # This file is not used by cookiecutter directly
 # and has to be converted to cookiecutter.json
 
-project_name: ansible_cvp_demo
+project_name: ansible_cvp  # project directory name
 ansible_user: cvpadmin
 ansible_password: arista123
 # template to be updated with filter plugin to avoid encrypting password or use vault
