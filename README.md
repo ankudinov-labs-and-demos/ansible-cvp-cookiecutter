@@ -7,7 +7,7 @@
   - [Lab Topology](#lab-topology)
   - [Clone Cookiecutter Repository](#clone-cookiecutter-repository)
   - [Preparing the Lab](#preparing-the-lab)
-  - [HOW TO RUN](#how-to-run)
+  - [How to Provision Lab Network](#how-to-provision-lab-network)
 
 <!-- /TOC -->
 
@@ -55,6 +55,7 @@ sudo apt install isc-dhcp-server
 sudo vi /etc/dhcp/dhcpd.conf
 systemctl enable isc-dhcp-server
 systemctl start isc-dhcp-server
+sudo systemctl status isc-dhcp-server
 ```
 
 dhcpd.conf file will be generated automatically by cookiecutter. Just copy-paste the content or use it as an example to adjust your DHCP server settings.
@@ -62,6 +63,7 @@ dhcpd.conf file will be generated automatically by cookiecutter. Just copy-paste
 All devices should register in Undefined container before you start:
 ![initial cvp state](media/initial_cvp_state.png)
 
-## HOW TO RUN
+## How to Provision Lab Network
 
-tbd
+1. Activate Python virtual environment with `source .venv/bin/activate`
+2. Run `ansible-playbook deploy-fabric-playbook.yml` or `make build`
